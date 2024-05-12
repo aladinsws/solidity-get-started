@@ -2,35 +2,37 @@
 pragma solidity ^0.8.0;
 
 contract MyContract{
-    // Mappings
-    mapping (uint => string) public names;
-    mapping (uint => Book) public books;
-    mapping(address => mapping (uint => Book) ) public myBooks;
+    // Conditionals
+    // Loops
+    uint[] public numbers = [1,2,3,4,5,6,7,8,9,10];
+    address public owner;
 
-    struct Book {
-        string title;
-        string author;
+    constructor() {
+        owner = msg.sender;
     }
 
-    constructor(){
-        names[1] = "Ala";
-        names[2] = "Bilel";
-        names[3] = "Sami";
+    function countEvenNumbers() public view returns(uint) {
+        uint count = 0;
+
+        for(uint i = 0;i< numbers.length;i++){
+            if(isEvenNumber(numbers[i])) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
-    function addBook(
-        uint _id,
-        string memory _title,
-        string memory _author
-    ) public {
-        books[_id] = Book(_title, _author);
+
+    function isEvenNumber(uint _number) public pure returns(bool) {
+        if(_number % 2 == 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-        function addMyBook(
-        uint _id,
-        string memory _title,
-        string memory _author
-    ) public {
-        myBooks[msg.sender][_id] = Book(_title, _author);
+    function isOwner() public view returns(bool) {
+        return(msg.sender == owner);
     }
 }
