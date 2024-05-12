@@ -1,38 +1,44 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract MyContract{
-    // Conditionals
-    // Loops
-    uint[] public numbers = [1,2,3,4,5,6,7,8,9,10];
-    address public owner;
+contract Ownable {
+    address owner;
+    
+    modifier onlyOwner() {
+        require(msg.sender == owner,"must be owner !");
+        _;
+    }
 
     constructor() {
         owner = msg.sender;
     }
 
-    function countEvenNumbers() public view returns(uint) {
-        uint count = 0;
+}
 
-        for(uint i = 0;i< numbers.length;i++){
-            if(isEvenNumber(numbers[i])) {
-                count++;
-            }
-        }
+contract SecretVault {
+    string secret;
 
-        return count;
+    constructor(string memory _secret) {
+        secret = _secret;
+    }
+
+    function getSecret() public view returns (string memory) {
+        return secret;
+    }
+
+}
+
+contract MyContract is Ownable {
+    address secretVault;
+
+    constructor(string memory _secret) {
+        super;
+        SecretVault _secretVault = new SecretVault(_secret);
+        secretVault = address(_secretVault);
     }
 
 
-    function isEvenNumber(uint _number) public pure returns(bool) {
-        if(_number % 2 == 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function isOwner() public view returns(bool) {
-        return(msg.sender == owner);
+    function getSecret() public view onlyOwner returns (string memory) {
+        return SecretVault(secretVault).getSecret();
     }
 }
