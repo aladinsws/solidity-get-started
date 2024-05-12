@@ -1,18 +1,36 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract MyContract {
-    // Arrays 
-    uint [] public uintArray = [1,2,3];
-    string[] public stringArray =["apple","banana","carrot"];
-    string[] public values;
-    uint256 [][] public array2D = [[1,2,3],[4,5,6]];
+contract MyContract{
+    // Mappings
+    mapping (uint => string) public names;
+    mapping (uint => Book) public books;
+    mapping(address => mapping (uint => Book) ) public myBooks;
 
-    function addValue(string memory _value) public {
-        values.push(_value);
+    struct Book {
+        string title;
+        string author;
     }
 
-    function valueCount() public view returns(uint){
-        return values.length;
+    constructor(){
+        names[1] = "Ala";
+        names[2] = "Bilel";
+        names[3] = "Sami";
+    }
+
+    function addBook(
+        uint _id,
+        string memory _title,
+        string memory _author
+    ) public {
+        books[_id] = Book(_title, _author);
+    }
+
+        function addMyBook(
+        uint _id,
+        string memory _title,
+        string memory _author
+    ) public {
+        myBooks[msg.sender][_id] = Book(_title, _author);
     }
 }
